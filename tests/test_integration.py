@@ -1,6 +1,7 @@
 """Entity/device setup and polling failure isolation."""
 from homeassistant.helpers import device_registry as dr, entity_registry as er
-from pytest_homeassistant_custom_component.common import MockConfigEntry
+from datetime import datetime, timedelta, timezone
+from pytest_homeassistant_custom_component.common import MockConfigEntry, async_fire_time_changed
 
 from custom_components.sungrow_local.client import SungrowError
 
@@ -57,9 +58,13 @@ async def test_meter_failure_does_not_hide_inverter(hass, mock_read, snapshot):
     assert hass.states.get("sensor.sungrow_inverter_generation_power").state == "1500"
 
 
-async def test_unload_removes_entities(hass, mock_read):
+async def test_unload_stops_updates(hass, mock_read):
     entry = await setup(hass)
     assert await hass.config_entries.async_unload(entry.entry_id)
     await hass.async_block_till_done()
-    assert hass.states.get("sensor.sungrow_inverter_generation_power") is None
-    assert hass.states.get("sensor.sungrow_smart_meter_grid_power") is None
+    assert hass.states.get("sensor.sungrow_inverter_generation_power").state == "unavailable"
+    assert hass.states.get("sensor.sungrow_smart_meter_grid_power").state == "unavailable"
+    call_count = mock_read[0].call_count
+    async_fire_time_changed(hass, datetime.now(timezone.utc) + timedelta(seconds=90))
+    await hass.async_block_till_done()
+    assert mock_read[0].call_count == call_count

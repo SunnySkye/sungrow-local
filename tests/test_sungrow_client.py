@@ -4,7 +4,7 @@ import importlib.util
 from pathlib import Path
 import struct
 import unittest
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, Mock, patch
 
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
@@ -54,27 +54,21 @@ class ProtocolTests(unittest.IsolatedAsyncioTestCase):
                 await client.read_registers("inverter", None, 5003, 1)
 
     async def test_fragmented_tcp_response(self):
-        async def handler(reader, writer):
-            await reader.readexactly(12)
+        reader = asyncio.StreamReader()
+        writer = Mock()
+        writer.drain = AsyncMock()
+        async def fragments():
             for fragment in [bytes.fromhex("000100"), bytes.fromhex("0000050104"), bytes.fromhex("02004c")]:
-                writer.write(fragment)
-                await writer.drain()
+                reader.feed_data(fragment)
                 await asyncio.sleep(0)
-            writer.close()
-            await writer.wait_closed()
-
-        server = await asyncio.start_server(handler, "127.0.0.1", 0)
-        port = server.sockets[0].getsockname()[1]
-        original_open = asyncio.open_connection
-        async def redirected_open(host, ignored_port):
-            return await original_open("127.0.0.1", port)
+        task = asyncio.create_task(fragments())
         try:
-            with patch.object(client.asyncio, "open_connection", side_effect=redirected_open):
+            with patch.object(client.asyncio, "open_connection", AsyncMock(return_value=(reader, writer))):
                 data = await client.read_registers("inverter", None, 5003, 1)
             self.assertEqual(data, bytes.fromhex("004c"))
+            writer.close.assert_called_once()
         finally:
-            server.close()
-            await server.wait_closed()
+            await task
 
 
 if __name__ == "__main__":
