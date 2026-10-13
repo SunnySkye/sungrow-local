@@ -1,0 +1,21 @@
+Sungrow Local
+Copyright (C) 2026 SunnySkye contributors
+Code license: GNU General Public License, version 3 or later.
+
+Protocol attribution:
+Sungrow-Modbus / SungrowModbusTcpClient
+Copyright (C) 2020 Roberto Panerai Velloso
+https://github.com/rpvelloso/Sungrow-Modbus
+Published under GPL-3.0-or-later. Its documented protocol informed the
+asynchronous read-only client implementation in this repository.
+
+Register references:
+SunGather by bohdan-s and contributors
+https://github.com/bohdan-s/SunGather
+
+Brand assets:
+The PNGs in custom_components/sungrow_local/brand were obtained from:
+https://github.com/home-assistant/brands/tree/master/custom_integrations/sungrow
+They identify compatible Sungrow hardware. Product names and brand marks
+belong to their respective owners. Their inclusion does not imply endorsement.
+The code license does not grant rights to Sungrow trademarks.

@@ -1,0 +1,34 @@
+{
+  "title": "Sungrow Local",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect a Sungrow SG5K-D",
+        "description": "Read your inverter over your local network. Enable the smart meter only on the inverter connected to it.",
+        "data": {
+          "host": "IP address",
+          "name": "Device name",
+          "smart_meter": "Smart meter connected"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Sungrow inverter",
+        "description": "Update the local address or meter option for the same inverter.",
+        "data": {
+          "host": "IP address",
+          "name": "Device name",
+          "smart_meter": "Smart meter connected"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not read a supported SG5K-D inverter at this address.",
+      "meter_unavailable": "This inverter did not return valid smart meter readings. Disable the smart meter option or check its connection.",
+      "wrong_inverter": "This address belongs to a different inverter. Use the address of the inverter already configured in this entry."
+    },
+    "abort": {
+      "already_configured": "This inverter is already configured.",
+      "reconfigure_successful": "Configuration updated."
+    }
+  }
+}

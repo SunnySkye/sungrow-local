@@ -1,0 +1,12 @@
+{
+  "domain": "sungrow_local",
+  "name": "Sungrow Local",
+  "version": "1.0.1",
+  "config_flow": true,
+  "documentation": "https://github.com/SunnySkye/sungrow-local",
+  "issue_tracker": "https://github.com/SunnySkye/sungrow-local/issues",
+  "iot_class": "local_polling",
+  "integration_type": "device",
+  "requirements": [],
+  "codeowners": ["@SunnySkye"]
+}
